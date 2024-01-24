@@ -7,7 +7,7 @@ from tensorflow.keras import backend as K
 app = Flask(__name__)
 
 # Load Siamese LSTM model
-model_path = "Model/weights.21-0.23.h5"  # Replace with the actual path to your model file
+model_path = "Model\weights.11-0.189.h5"  # Replace with the actual path to your model file
 
 def exponent_neg_manhattan_distance(left, right):
     return K.exp(-K.sum(K.abs(left - right), axis=1, keepdims=True))
@@ -30,16 +30,19 @@ def predict(encod1, encod2):
     encod1 = preprocess_text([encod1])
     encod2 = preprocess_text([encod2])
     prediction = malstm.predict([encod1, encod2])
-    return outtolabel[int(prediction[0][0] > 0.5)]  # Adjust the threshold as needed
+    print("encod1:", encod1)
+    print("encod2:", encod2)
+    print("prediction:", prediction)
+    return outtolabel[int(prediction[0][0] > threshold)]  # Adjust the threshold as needed
 
 # routes
 @app.route("/", methods=['GET', 'POST'])
 def main():
     return render_template("index.html")
 
-@app.route("/about")
-def about_page():
-    return render_template("about.html")
+# @app.route("/about")
+# def about_page():
+#     return render_template("about.html")
 
 @app.route("/submit", methods=['POST'])
 def get_output():
